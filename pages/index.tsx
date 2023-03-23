@@ -8,7 +8,7 @@ const HomePage: NextPage = () => {
     <div className="flex flex-col justify-center min-h-screen antialiased text-center text-slate-50">
       <div className="flex flex-col items-center px-6 m-auto mx-auto max-w-7xl">
         <h1 className="max-w-lg text-xl font-extrabold">
-          Domain-specific Chat GPT-3 Starter App
+          Domain-specific ChatBot - Final Year Project
         </h1>
         <ul className="mt-10 mb-6 text-xs sm:text-sm text-slate-400">
           <li><Link href="/embeddings" >Create Embeddings</Link></li>

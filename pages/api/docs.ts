@@ -71,6 +71,8 @@ const handler = async (req: Request): Promise<Response> => {
     }
   );
 
+ 
+
   if (error) console.error(error);
 
   const tokenizer = new GPT3Tokenizer({ type: "gpt3" });
@@ -94,6 +96,8 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       contextText += `${content.trim()}\nSOURCE: ${url}\n---\n`;
+      console.log("url:")
+      console.log(url)
     }
   }
 
@@ -106,26 +110,22 @@ const handler = async (req: Request): Promise<Response> => {
   source URLs include them under a SOURCES heading at the end of your response. Always include all of the relevant source urls 
   from the CONTEXT, but never list a URL more than once (ignore trailing forward slashes when comparing for uniqueness). Never include URLs that are not in the CONTEXT sections. Never make up URLs`;
 
-  const userContent = `CONTEXT:
-  Next.js is a React framework for creating production-ready web applications. It provides a variety of methods for fetching data, a built-in router, and a Next.js Compiler for transforming and minifying JavaScript code. It also includes a built-in Image Component and Automatic Image Optimization for resizing, optimizing, and serving images in modern formats.
-  SOURCE: nextjs.org/docs/faq
+    const userContent = `CONTEXT:
+  The Department of Computer Science and Engineering (CSE) was established in the year 1984. Therefore, the CSE department is around 37 years old (as of 2021).
+  SOURCE: https://msrit.edu/department/cse.html
   
   QUESTION: 
-  what is nextjs?    
+  when was cse established    
   `;
 
-  const assistantContent = `Next.js is a framework for building production-ready web applications using React. It offers various data fetching options, comes equipped with an integrated router, and features a Next.js compiler for transforming and minifying JavaScript. Additionally, it has an inbuilt Image Component and Automatic Image Optimization that helps resize, optimize, and deliver images in modern formats.
+  const assistantContent = `The Department of Computer Science and Engineering (CSE) was established in the year 1984. Therefore, the CSE department is around 37 years old (as of 2021).
   
-  \`\`\`js
-  function HomePage() {
-    return <div>Welcome to Next.js!</div>
-  }
   
-  export default HomePage
-  \`\`\`
+  You can learn more about this topic below
+  
   
   SOURCES:
-  https://nextjs.org/docs/faq`;
+  https://msrit.edu/department/cse.html`;
 
   const userMessage = `CONTEXT:
   ${contextText}
@@ -158,6 +158,7 @@ const handler = async (req: Request): Promise<Response> => {
 
   const payload: OpenAIStreamPayload = {
     model: "gpt-3.5-turbo-0301",
+    // model :"text-davinci-003",
     messages: messages,
     temperature: 0,
     top_p: 1,
