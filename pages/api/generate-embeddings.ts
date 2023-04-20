@@ -101,8 +101,8 @@ async function getDocuments(urls: string[]) {
     // Clean up the text
     articleText = articleText.replace(/\n+/g, " ");
     articleText = articleText.replace(/\t+/g, " ");
+    articleText = articleText.replace(/\s+/g, " ");
     
-
 
     let start = 0;
     while (start < articleText.length) {

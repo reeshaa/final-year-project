@@ -85,12 +85,12 @@ const handler = async (req: Request): Promise<Response> => {
       const document = documents[i];
       const content = document.content;
       const url = document.url;
-      console.log(document.url)
+      // console.log(document.url)
       const encoded = tokenizer.encode(content);
       tokenCount += encoded.text.length;
 
       // Limit context to max 1500 tokens (configurable)
-      if (tokenCount > 1500) {
+      if (tokenCount > 1750) {
         break;
       }
 
@@ -100,15 +100,24 @@ const handler = async (req: Request): Promise<Response> => {
     }
   }
 
-  console.log("contextText: ", contextText);
+  console.log("contextText before trimming: ", contextText);
+  console.log("contextText Length: ", contextText.length);
+  // remove continuous spaces and replace with single space
+  contextText = contextText.replace(/\s+/g, " ");
+  console.log("contextTextTrimmed Length: ", contextText.length);
+  console.log("contextTextTrimmed: ", contextText);
+
 
   const systemContent = `You are a helpful question answering bot. You are given the CONTEXT of Ramaiah Institute of Technology and information about this instituiton from its website.
   When given CONTEXT you answer questions using only that information. You may correlate multiple contexts to derive a more helpful or relevant answer.
-  If you are unsure and the answer is not explicitly present in the CONTEXT provided, you say
-  "Sorry, I could not find an answer to that"  
+  
   If the CONTEXT includes source URLs include them under a SOURCES heading at the end of your response. Always include all of the relevant source urls 
   from the CONTEXT, but never list a URL more than once (ignore trailing forward slashes when comparing for uniqueness). Never include URLs that are not in the CONTEXT sections.
-  Never make up URLs.`;
+  Never make up URLs.
+  
+  If you are unsure and the answer is not explicitly present in the CONTEXT provided, you say
+  "Sorry, I could not find an answer to that"
+  `;
 
   const userContent = `QUESTION: What is MSRIT?
 
@@ -172,12 +181,17 @@ const handler = async (req: Request): Promise<Response> => {
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0.2,
-    max_tokens: 2000,
+    max_tokens: 2500,
     stream: true,
     n: 1
   };
 
-  const stream = await OpenAIStream(payload);
+  const stream = await OpenAIStream(payload).catch((err) => {
+    
+    console.error(err);
+    // return new Response(err, { status: 500 });
+  });
+
   return new Response(stream);
 };
 
