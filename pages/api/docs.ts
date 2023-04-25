@@ -1,5 +1,6 @@
 import { supabaseClient } from "@/lib/embeddings-supabase";
 import { OpenAIStream, OpenAIStreamPayload } from "@/utils/OpenAIStream";
+import { SystemContent, UserContent, AssistantContent } from "@/utils/Prompts";
 import { oneLine, stripIndent } from "common-tags";
 import GPT3Tokenizer from "gpt3-tokenizer";
 import { Configuration, OpenAIApi } from "openai";
@@ -126,48 +127,12 @@ const handler = async (req: Request): Promise<Response> => {
     }
   }
 
-  console.log("contextText before trimming: ", contextText);
+  // console.log("contextText before trimming: ", contextText); // uncomment this if you want to see the context in the terminal
   console.log("contextText Length: ", contextText.length);
   // remove continuous spaces and replace with single space
   contextText = contextText.replace(/\s+/g, " ");
   console.log("contextTextTrimmed Length: ", contextText.length);
-  console.log("contextTextTrimmed: ", contextText);
-
-
-  const systemContent = `You are a helpful question answering bot. You are given the CONTEXT of Ramaiah Institute of Technology and information about this instituiton from its website.
-  When given CONTEXT you answer questions using only that information. You may correlate multiple contexts to derive a more helpful or relevant answer.
-  
-  If the CONTEXT includes source URLs include them under a SOURCES heading at the end of your response. Always include all of the relevant source urls 
-  from the CONTEXT, but never list a URL more than once (ignore trailing forward slashes when comparing for uniqueness). Never include URLs that are not in the CONTEXT sections.
-  Never make up URLs.
-  
-  If you are unsure and the answer is not explicitly present in the CONTEXT provided, you say
-  "Sorry, I could not find an answer to that"
-  `;
-
-  const userContent = `QUESTION: What is MSRIT?
-
-    CONTEXT: """
-    Ramaiah Institute of Technology (RIT), formerly known as M.S. Ramaiah Institute of Technology (MSRIT), is an autonomous private engineering college located in Bangalore in the Indian state of Karnataka.
-    Established in 1962, the college is affiliated to Visvesvaraya Technological University.
-
-    RIT has 25 departments, namely Architecture, Biotechnology, Chemical Engineering, Chemistry, Civil Engineering, Computer Science and Engineering, Artificial intelligence and machine learning,
-    Artificial intelligence and data science, Electronics and Communication Engineering,
-    Electronics and Instrumentation Engineering, Electrical and Electronics Engineering, Electronics and Telecommunication Engineering,
-    Humanities, Industrial Engineering and Management, Information Science and Engineering, Mathematics, Master of Computer Applications,
-    Management Studies (MBA), Mechanical Engineering, Medical Electronics, Physics.
-    """
-  `;
-
-  const assistantContent = `
-  MSRIT stands for M.S. Ramaiah Institute of Technology, which is an engineering college located in Bangalore, India. It was established in 1962 by the late philanthropist and industrialist, Dr. M.S. Ramaiah.
-  MSRIT is affiliated with the Visvesvaraya Technological University and offers undergraduate, postgraduate, and research programs in various fields of engineering, including computer science,
-  electronics and communication, mechanical, civil, chemical, and electrical engineering.
-  The institute is known for its strong academic curriculum, state-of-the-art facilities, and excellent placement opportunities for its students.
-  
-  SOURCES:
-  https://msrit.edu/about-us.html
-  `;
+  // console.log("contextTextTrimmed: ", contextText); // uncomment this if you want to see the context in the terminal
 
   const userMessage = `
   USER QUESTION: 
@@ -181,15 +146,15 @@ const handler = async (req: Request): Promise<Response> => {
   const messages = [
     {
       role: "system",
-      content: systemContent
+      content: SystemContent
     },
     {
       role: "user",
-      content: userContent
+      content: UserContent
     },
     {
       role: "assistant",
-      content: assistantContent
+      content: AssistantContent
     },
     {
       role: "user",
@@ -198,12 +163,16 @@ const handler = async (req: Request): Promise<Response> => {
   ];
 
   // console.log("messages: ", messages);
+  const OPENAI_MODEL = "gpt-3.5-turbo"; // THIS ONE WORKS, because it is a "Chat Completion" Model
+  // const OPENAI_MODEL = "text-davinci-003"; // CANT USE THIS BECUASE DAVINCI IS A "completion" Model
 
+  console.log("OPENAI_MODEL: ", OPENAI_MODEL);
+
+  // https://platform.openai.com/docs/api-reference/chat/create - Refer this for more details on the payload
   const payload: OpenAIStreamPayload = {
-    model: "gpt-3.5-turbo-0301",
-    // model :"text-davinci-003",
+    model: OPENAI_MODEL,
     messages: messages,
-    temperature: 0.25,
+    temperature: 0.25, 
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0.2,
@@ -212,15 +181,23 @@ const handler = async (req: Request): Promise<Response> => {
     n: 1
   };
 
-  console.log("Sending context and query as payload to OPEN AI:");
+  console.log("Sending context and query as payload to OPEN AI...");
 
-  const stream = await OpenAIStream(payload).catch((err) => {
-    
-    console.error(err);
-    // TODO: Handle this error so that the frontend isn't hung up
-    // return err;
-  });
+  const openAIInferenceResponse = await OpenAIStream(payload);
 
+  if (!openAIInferenceResponse.ok) {
+    let _errorMsg =
+      openAIInferenceResponse.status + " " + openAIInferenceResponse.statusText;
+    console.error("Error in Open AI Inference API response: " + _errorMsg);
+    return new Response(
+      "Error in Open AI Inference API response: " + _errorMsg,
+      { status: 400 }
+    );
+  }
+
+  const stream = openAIInferenceResponse.body;
+
+  console.log("Sending streamed response to frontend.");
   return new Response(stream);
 };
 
