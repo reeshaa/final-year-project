@@ -45,7 +45,12 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
     console.log("Edge function returned.");
 
     if (!response.ok) {
-      throw new Error(response.statusText);
+      console.log("Response received by frontend: ", response);
+      setLoading(false);
+      console.log("Response body: ", response.body);
+      toast.error("Something went wrong!");
+      // Instead of throwing an error and crashing the app, we will show the error message as the 
+      // streamed response
     }
 
     // This data is a ReadableStream

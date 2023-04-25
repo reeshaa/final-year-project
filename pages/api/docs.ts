@@ -43,6 +43,8 @@ const handler = async (req: Request): Promise<Response> => {
 
   const apiKey = process.env.OPENAI_API_KEY;
 
+  console.log("Requesting embedding for: ", input);
+
   const embeddingResponse = await fetch(
     "https://api.openai.com/v1/embeddings",
     {
@@ -58,11 +60,25 @@ const handler = async (req: Request): Promise<Response> => {
     }
   );
 
-  const embeddingData = await embeddingResponse.json();
-  const [{ embedding }] = embeddingData.data;
+  const embeddingResponseJSON = await embeddingResponse.json();
+
+  if (embeddingResponseJSON.error) {
+    console.error(
+      "Error in Embeddings API response: ",
+      embeddingResponseJSON.error
+    );
+    return new Response(
+      "Error in Embeddings API response: " +
+        embeddingResponseJSON.error?.message,
+      { status: 400 }
+    );
+  }
+
+  const [{ embedding }] = embeddingResponseJSON.data;
+  console.log("Embedding constructed for the input.");
   // console.log("embedding: ", embedding);
 
-  const { data: documents, error } = await supabaseClient.rpc(
+  const { data: documents, error: supabase_error } = await supabaseClient.rpc(
     "match_documents",
     {
       query_embedding: embedding,
@@ -71,17 +87,27 @@ const handler = async (req: Request): Promise<Response> => {
     }
   );
 
-  if (error) console.error(error);
+  if (supabase_error) {
+    console.error(supabase_error);
+    return new Response(
+      "Error in retrieving documents:" + supabase_error.message,
+      {
+        status: 400
+      }
+    );
+  }
 
   const tokenizer = new GPT3Tokenizer({ type: "gpt3" });
   let tokenCount = 0;
   let contextText = "";
 
-  console.log("No. of documents retrieved: ", documents?.length);
+  console.log("No. of documents retrieved from Supabase: ", documents?.length);
+
+  console.log("Constructing context.....");
 
   // Concat matched documents
   if (documents) {
-    for (let i =0 ; i < documents.length; i++) {
+    for (let i = 0; i < documents.length; i++) {
       const document = documents[i];
       const content = document.content;
       const url = document.url;
@@ -186,10 +212,13 @@ const handler = async (req: Request): Promise<Response> => {
     n: 1
   };
 
+  console.log("Sending context and query as payload to OPEN AI:");
+
   const stream = await OpenAIStream(payload).catch((err) => {
     
     console.error(err);
-    // return new Response(err, { status: 500 });
+    // TODO: Handle this error so that the frontend isn't hung up
+    // return err;
   });
 
   return new Response(stream);
