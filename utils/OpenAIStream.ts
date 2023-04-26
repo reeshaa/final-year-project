@@ -31,6 +31,11 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
     body: JSON.stringify(payload),
   });
 
+  if(!res.ok){
+    // Send the response back to the caller, the error is handled there itself
+    return res;
+  }
+
   const stream = new ReadableStream({
     async start(controller) {
       // callback
@@ -66,5 +71,7 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
     },
   });
 
-  return stream;
+  // Send a success response back to the caller, note, the stream is the body
+  return new Response(stream, {status: 200});
+  
 }
