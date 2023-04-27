@@ -116,14 +116,13 @@ const handler = async (req: Request): Promise<Response> => {
       const encoded = tokenizer.encode(content);
       tokenCount += encoded.text.length;
 
-      // Limit context to max 1500 tokens (configurable)
-      if (tokenCount > 1750) {
+      // Limit context to max 3500 tokens (configurable)
+      if (tokenCount > 3500) {
         break;
       }
 
       contextText += `${content.trim()}\nSOURCE: ${url}\n---\n`;
-      console.log("url:");
-      console.log(url);
+      console.log("url:" + url);
     }
   }
 
@@ -132,6 +131,7 @@ const handler = async (req: Request): Promise<Response> => {
   // remove continuous spaces and replace with single space
   contextText = contextText.replace(/\s+/g, " ");
   console.log("contextTextTrimmed Length: ", contextText.length);
+  console.log("Token Count: ", tokenCount);
   // console.log("contextTextTrimmed: ", contextText); // uncomment this if you want to see the context in the terminal
 
   const userMessage = `
@@ -142,6 +142,14 @@ const handler = async (req: Request): Promise<Response> => {
   ${contextText}
   """  
   `;
+
+  let _userContentTokenCount = tokenizer.encode(userMessage).text.length;
+  console.log("userContentTokenCount: ", _userContentTokenCount);
+  let _systemContentTokenCount = tokenizer.encode(SystemContent).text.length;
+  console.log("systemContentTokenCount: ", _systemContentTokenCount);
+  let _assistantContentTokenCount = tokenizer.encode(AssistantContent).text.length;
+  console.log("assistantContentTokenCount: ", _assistantContentTokenCount);
+
 
   const messages = [
     {
@@ -172,11 +180,11 @@ const handler = async (req: Request): Promise<Response> => {
   const payload: OpenAIStreamPayload = {
     model: OPENAI_MODEL,
     messages: messages,
-    temperature: 0.25, 
+    temperature: 0.25,
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0.2,
-    max_tokens: 2500,
+    max_tokens: 500, // number of tokens retrieved in the answer
     stream: true,
     n: 1
   };
@@ -188,11 +196,10 @@ const handler = async (req: Request): Promise<Response> => {
   if (!openAIInferenceResponse.ok) {
     let _errorMsg =
       openAIInferenceResponse.status + " " + openAIInferenceResponse.statusText;
-    console.error("Error in Open AI Inference API response: " + _errorMsg);
-    return new Response(
-      "Error in Open AI Inference API response: " + _errorMsg,
-      { status: 400 }
+    console.error(
+      "Error in Open AI Inference API response: " + openAIInferenceResponse.body
     );
+    return new Response(openAIInferenceResponse.body, { status: 400 });
   }
 
   const stream = openAIInferenceResponse.body;
