@@ -161,19 +161,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
                       {answer.split("SOURCES:").map((splitanswer, index) => {
                         return (
                           <div
-                            className={`p-4 transition bg-neutral border border-neutral-focus shadow-md rounded-xl overflow-x-auto max-w-xl ${
-                              index === 0
-                                ? "hover:border-accent-focus cursor-copy text-left"
-                                : ""
-                            }`}
-                            onClick={() => {
-                              if (index === 0) {
-                                navigator.clipboard.writeText(splitanswer);
-                                toast("Copied to clipboard!", {
-                                  icon: "✂️"
-                                });
-                              }
-                            }}
+                            className={`p-4 transition bg-neutral border border-neutral-focus shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus  text-left"}`}
                             key={index}
                           >
                             {index === 0 ? (

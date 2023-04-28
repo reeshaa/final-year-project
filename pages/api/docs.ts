@@ -38,7 +38,6 @@ const handler = async (req: Request): Promise<Response> => {
 
   const query = question;
 
-  // OpenAI recommends replacing newlines with spaces for best results
   const input = query.replace(/\n/g, " ");
   // console.log("input: ", input);
 
@@ -83,8 +82,8 @@ const handler = async (req: Request): Promise<Response> => {
     "match_documents",
     {
       query_embedding: embedding,
-      similarity_threshold: 0.1, // Choose an appropriate threshold for your data
-      match_count: 10 // Choose the number of matches
+      similarity_threshold: 0.1, // threshold to tweek
+      match_count: 10  // top matches count
     }
   );
 

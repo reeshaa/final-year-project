@@ -5,15 +5,13 @@ import { Configuration, OpenAIApi } from "openai";
 import puppeteer from 'puppeteer';
 
 
-// Size of the chunks of text to be embedded
 const docSize: number = 1000;
 
 const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
 const openAi = new OpenAIApi(configuration);
 
 /**
- *  Handles the POST request to generate embeddings for a given URL
- *  and stores them in the database
+
  * 
  * @param req 
  * @param res 
@@ -45,8 +43,7 @@ export default async function handle(
         input
       });
       
-      // Abort when creating an embedding fails
-      // Later we should handle this more gracefully
+
       if(embeddingResponse.status != 200){
         console.log(`\nEmbedding failed for [Doc ${documentLoopVar+1}]:`);
         return res.status(400).json({ success: false, message: embeddingResponse });
@@ -61,7 +58,6 @@ export default async function handle(
       
       const [{ embedding }] = embeddingResponse.data.data;
 
-      // In production we should handle possible errors
       await supabaseClient.from("documents").insert({
         content: input,
         embedding,
@@ -84,8 +80,7 @@ export default async function handle(
 }
 
 /**
- *  Loads the webpage and splits the text into chunks of a given size
- *  and returns an array of documents
+ 
  * 
  * @param urls - Array of URLs to load
  * @returns documents - Array of documents
@@ -116,11 +111,7 @@ async function getDocuments(urls: string[]) {
 }
 
 /**
- * Opens the webpage in a headless browser and returns the HTML content
- * Note: An advantage of using a headless browser is that we can load
- *      the webpage as it would be rendered in a browser. This means
- *     that we can use the same selectors as we would in a browser.
- *     This is not possible when using the fetch API.
+
  * 
  * @param url - URL of the webpage to load
  * @returns html - HTML content of the webpage
