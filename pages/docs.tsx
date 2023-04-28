@@ -76,6 +76,33 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
     setLoading(false);
   };
 
+  /**
+   * TODO: We need to prettify the URLs returned as a part of SOURCES
+   * @reesha please do this
+   *
+   *  For this, you can use the API endpoint: /api/link-metadata
+   *
+   * API Docs:
+   * Request Type: POST
+   * Request Body: {
+   *    urls: string[]
+   * }
+   *
+   * Response: {
+   *  url: string,
+   * title: string,
+   * description: string,
+   * siteName: string,
+   * favicons: string[],
+   * contentType: string,
+   * mediaType: string,
+   * images: string[],
+   * videos: string[],
+   * }
+   *
+   */
+  const retrieveSourceURLsMetadata = async (_urls: string[]) => {};
+
   return (
     <>
       <MetaTags
@@ -95,7 +122,9 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
               onChange={(e) => setUserQ(e.target.value)}
               rows={4}
               className="w-full p-2 my-5 border rounded-md shadow-md bg-neutral border-neutral-focus "
-              placeholder={"e.g. How old is CSE dept"}
+              placeholder={
+                "e.g. Which department to join? I am interested in so and so things..."
+              }
             />
 
             {!loading && (
