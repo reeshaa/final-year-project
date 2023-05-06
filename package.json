@@ -18,6 +18,8 @@
     "eventsource-parser": "^0.0.5",
     "framer-motion": "^8.4.3",
     "gpt3-tokenizer": "^1.1.5",
+    "html-chunk-process": "^1.0.1",
+    "html-to-text": "^9.0.5",
     "link-preview-js": "^3.0.4",
     "nex": "^2.0.22",
     "next": "^13.1.1",
