@@ -10,14 +10,21 @@ import { BlockTextBuilder } from "html-to-text/lib/block-text-builder";
 
 const docSize = 1000;
 
-export function chunking(originalHTML: string): string[] {
+/**
+ * Break the HTML into meaningful chunks based on headings and sections
+ * 
+ * @param originalHTML - Raw HTML downloaded from the web
+ * @returns an array of chunks
+ */
+export function ChunkTheHTML(originalHTML: string): string[] {
   console.log("*** NEW CHUNKING PROCESS ***");
-  console.log(__dirname);
 
   const $ = cheerio.load(originalHTML);
 
   let mainHTML = $("body")?.html() ?? "";
-  let articleText: string = convert(mainHTML, {
+
+  
+  let mainHTMLAsText: string = convert(mainHTML, {
     formatters: {
       heading: headingFormatter
     },
@@ -31,31 +38,46 @@ export function chunking(originalHTML: string): string[] {
     ]
   });
   // Clean up the text
-  articleText = articleText.replace(/\n+/g, "\n");
-  articleText = articleText.replace(/\t+/g, " ");
-  // articleText = articleText.replace(/\s+/g, " ");
+  mainHTMLAsText = mainHTMLAsText.replace(/\n+/g, "\n");
+  mainHTMLAsText = mainHTMLAsText.replace(/\t+/g, " ");
+  // mainHTMLAsText = mainHTMLAsText.replace(/\s+/g, " ");
 
-  let start = 0;
+  
   let chunks = [];
 
-  // Create chunks of 1000 characters by splitting the articleText on [!!SECTION BREAK!!]
+  // Create chunks of docsize characters by splitting the mainHTMLAsText on [!!SECTION BREAK!!]
   let _chunkSize = 0;
   let _chunk = "";
-  let sections: string[] = articleText.split("[!!SECTION BREAK!!]");
+  let sections = mainHTMLAsText.split("[!!SECTION BREAK!!]");
+
   sections.forEach((section, index) => {
     let _sectionLength = section.length;
     let _chunkLength = _chunk.length;
     if (_chunkLength + _sectionLength < docSize) {
+      /**
+       * If the section is smaller than the docSize, we can just add it to the chunk
+       */
       _chunk += section;
       _chunkSize += _sectionLength;
     } else if (_sectionLength > docSize) {
+      /**
+       * If the section is larger than the docSize, we need to break it into pieces
+       * and append the heading to each piece
+       */
+
       let _heading = section.split("\n")[0];
-      // get everything after heading
       let _headingLength = _heading.length;
+
+      // Extract the contents of the section after the heading
       let _sectionAfterHeading = section.substring(
         _heading.length,
         _sectionLength
       );
+
+      /**
+       * break the section into pieces of `docSize - headingLength - 2` characters
+       * (the -2 is for the colon and newline)
+       */
       let _pieces = breakSectionIntoPieces(
         _sectionAfterHeading,
         docSize - _headingLength - 2
@@ -75,12 +97,8 @@ export function chunking(originalHTML: string): string[] {
       _chunkSize = _sectionLength;
     }
   });
+  // Add the remaining chunk to the array
   chunks.push(_chunk);
-
-  // chunks.forEach((chunk, index) => {
-  //   // save each chunk to a file in /chunks/
-  //   // saveChunkToFile(chunk, index);
-  // });
 
   return chunks;
 }
@@ -97,6 +115,12 @@ function saveChunkToFile(htmlFragment: string, index: number) {
   fs.writeFileSync(__dirname + `/chunks/chunk${index}.txt`, htmlFragment);
 }
 
+/**
+ * Custom formatter for headings
+ * 
+ * This formatter adds a [!!SECTION BREAK!!] before each heading
+ * This is used to split the document into chunks later
+ */
 function headingFormatter(
   elem: DomNode,
   walk: RecursiveCallback,
@@ -113,9 +137,15 @@ function headingFormatter(
   });
 }
 
-function breakSectionIntoPieces(section: string, maxSize: number) {
+/**
+ * Break a section into pieces of maxSize, but don't break in the middle of a line
+ * @param section - the section to break
+ * @param maxSize - the maximum size of each piece
+ * @returns  an array of pieces
+ */
+function breakSectionIntoPieces(section: string, maxSize: number): string[] {
   let start = 0;
-  let pieces = [];
+  let pieces: string[] = [];
   // break section into pieces of maxSize, but don't break in the middle of a line
   while (start < section.length) {
     let end = start + maxSize;
