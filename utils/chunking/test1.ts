@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+export const TestHTML: string = `<!DOCTYPE html>
 <html
   lang="en"
   style=""
@@ -3028,3 +3028,4 @@
     </script>
   </body>
 </html>
+`;

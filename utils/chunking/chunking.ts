@@ -1,37 +1,35 @@
-const puppeteer = require("puppeteer");
-const cheerio = require("cheerio");
-const chunkProcessHTML = require("html-chunk-process");
-var fs = require("fs");
-const { convert } = require("html-to-text");
+import cheerio from "cheerio";
+import fs from "fs";
+import {
+  DomNode,
+  FormatOptions,
+  RecursiveCallback,
+  convert
+} from "html-to-text";
+import { BlockTextBuilder } from "html-to-text/lib/block-text-builder";
 
 const docSize = 1000;
 
-async function chunking() {
+export function chunking(originalHTML: string): string[] {
   console.log("*** NEW CHUNKING PROCESS ***");
   console.log(__dirname);
-  var originalHTML = fs.readFileSync(__dirname + "/test1.html", {
-    encoding: "utf8"
-  });
+
   const $ = cheerio.load(originalHTML);
 
-  let mainHTML = $("body").html();
-  let articleText = convert(
-    mainHTML,
-
-    {
-      formatters: {
-        heading: headingFormatter
-      },
-      selectors: [
-        { selector: "h1", format: "heading" },
-        { selector: "h2", format: "heading" },
-        { selector: "h3", format: "heading" },
-        { selector: "h4", format: "heading" },
-        { selector: "h5", format: "heading" },
-        { selector: "h6", format: "heading" }
-      ]
-    }
-  );
+  let mainHTML = $("body")?.html() ?? "";
+  let articleText: string = convert(mainHTML, {
+    formatters: {
+      heading: headingFormatter
+    },
+    selectors: [
+      { selector: "h1", format: "heading" },
+      { selector: "h2", format: "heading" },
+      { selector: "h3", format: "heading" },
+      { selector: "h4", format: "heading" },
+      { selector: "h5", format: "heading" },
+      { selector: "h6", format: "heading" }
+    ]
+  });
   // Clean up the text
   articleText = articleText.replace(/\n+/g, "\n");
   articleText = articleText.replace(/\t+/g, " ");
@@ -43,7 +41,7 @@ async function chunking() {
   // Create chunks of 1000 characters by splitting the articleText on [!!SECTION BREAK!!]
   let _chunkSize = 0;
   let _chunk = "";
-  let sections = articleText.split("[!!SECTION BREAK!!]");
+  let sections: string[] = articleText.split("[!!SECTION BREAK!!]");
   sections.forEach((section, index) => {
     let _sectionLength = section.length;
     let _chunkLength = _chunk.length;
@@ -65,14 +63,12 @@ async function chunking() {
 
       //append heading to each piece and add to chunks
       _pieces.forEach((piece, index) => {
-        let _piece = _heading + "\n" + 
-        piece;
+        let _piece = _heading.toUpperCase() + ":\n" + piece;
         chunks.push(_piece);
       });
 
       _chunk = "";
       _chunkSize = 0;
-
     } else {
       chunks.push(_chunk);
       _chunk = section;
@@ -81,13 +77,15 @@ async function chunking() {
   });
   chunks.push(_chunk);
 
-  chunks.forEach((chunk, index) => {
-    // save each chunk to a file in /chunks/
-    saveChunkToFile(chunk, index);
-  });
+  // chunks.forEach((chunk, index) => {
+  //   // save each chunk to a file in /chunks/
+  //   // saveChunkToFile(chunk, index);
+  // });
+
+  return chunks;
 }
 
-function saveChunkToFile(htmlFragment, index) {
+function saveChunkToFile(htmlFragment: string, index: number) {
   //typically this would invoke an external HTML-digesting API with a payload limit
   //but for this example we'll just write the fragment to a file
 
@@ -96,18 +94,15 @@ function saveChunkToFile(htmlFragment, index) {
   //   if (err) throw err;
   //   console.log("Saved!");
   // });
-  fs.writeFileSync(
-    __dirname + `/chunks/chunk${index}.txt`,
-    htmlFragment,
-    function (err) {
-      if (err) {
-        return console.log(err);
-      }
-    }
-  );
+  fs.writeFileSync(__dirname + `/chunks/chunk${index}.txt`, htmlFragment);
 }
 
-function headingFormatter(elem, walk, builder, formatOptions) {
+function headingFormatter(
+  elem: DomNode,
+  walk: RecursiveCallback,
+  builder: BlockTextBuilder,
+  formatOptions: FormatOptions
+) {
   builder.openBlock({
     // leadingLineBreaks: formatOptions.leadingLineBreaks || 1
   });
@@ -118,7 +113,7 @@ function headingFormatter(elem, walk, builder, formatOptions) {
   });
 }
 
-function breakSectionIntoPieces(section, maxSize) {
+function breakSectionIntoPieces(section: string, maxSize: number) {
   let start = 0;
   let pieces = [];
   // break section into pieces of maxSize, but don't break in the middle of a line
@@ -136,5 +131,3 @@ function breakSectionIntoPieces(section, maxSize) {
 
   return pieces;
 }
-
-chunking();
