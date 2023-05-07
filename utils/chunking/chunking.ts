@@ -1,4 +1,4 @@
-import cheerio from "cheerio";
+import cheerio, { CheerioAPI } from "cheerio";
 import fs from "fs";
 import {
   DomNode,
@@ -12,7 +12,7 @@ const docSize = 1000;
 
 /**
  * Break the HTML into meaningful chunks based on headings and sections
- * 
+ *
  * @param originalHTML - Raw HTML downloaded from the web
  * @returns an array of chunks
  */
@@ -21,9 +21,10 @@ export function ChunkTheHTML(originalHTML: string): string[] {
 
   const $ = cheerio.load(originalHTML);
 
+  let pageMetadata = extractDocumentMetadata($);
+
   let mainHTML = $("body")?.html() ?? "";
 
-  
   let mainHTMLAsText: string = convert(mainHTML, {
     formatters: {
       heading: headingFormatter
@@ -42,7 +43,6 @@ export function ChunkTheHTML(originalHTML: string): string[] {
   mainHTMLAsText = mainHTMLAsText.replace(/\t+/g, " ");
   // mainHTMLAsText = mainHTMLAsText.replace(/\s+/g, " ");
 
-  
   let chunks = [];
 
   // Create chunks of docsize characters by splitting the mainHTMLAsText on [!!SECTION BREAK!!]
@@ -100,6 +100,17 @@ export function ChunkTheHTML(originalHTML: string): string[] {
   // Add the remaining chunk to the array
   chunks.push(_chunk);
 
+  /**
+   * Prefix each chunk with the page metadata
+   */
+  chunks.forEach((chunk, index) => {
+    let metadataPadding = `(${pageMetadata.pageTitle})`;
+    if (pageMetadata.heading1.length>0) metadataPadding += ` (${pageMetadata.heading1}) `;
+    if (pageMetadata.heading2.length>0) metadataPadding += ` (${pageMetadata.heading2}) `;
+
+    chunks[index] = metadataPadding + chunk;
+  });
+
   return chunks;
 }
 
@@ -117,7 +128,7 @@ function saveChunkToFile(htmlFragment: string, index: number) {
 
 /**
  * Custom formatter for headings
- * 
+ *
  * This formatter adds a [!!SECTION BREAK!!] before each heading
  * This is used to split the document into chunks later
  */
@@ -160,4 +171,27 @@ function breakSectionIntoPieces(section: string, maxSize: number): string[] {
   }
 
   return pieces;
+}
+
+/**
+ * Extract the page title and first two headings from the document
+ */
+function extractDocumentMetadata($: CheerioAPI): {
+  pageTitle: string;
+  heading1: string;
+  heading2: string;
+} {
+  let pageTitle = $("title").text();
+  let heading1 = $("h1").first().text().trim();
+  let heading2 = $("h2").first().text().trim();
+
+  console.log("pageTitle: " + pageTitle);
+  console.log("heading1: " + heading1);
+  console.log("heading2: " + heading2);
+
+  return {
+    pageTitle,
+    heading1,
+    heading2
+  };
 }
