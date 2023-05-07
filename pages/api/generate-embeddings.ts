@@ -1,9 +1,10 @@
 import { supabaseClient } from "@/lib/embeddings-supabase";
+import { ChunkItem } from "@/utils/chunking/ChunkItem";
+import { ChunkTheHTML } from "@/utils/chunking/chunking";
 import * as cheerio from "cheerio";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, OpenAIApi } from "openai";
-import puppeteer from 'puppeteer';
-
+import puppeteer from "puppeteer";
 
 const docSize: number = 1000;
 
@@ -25,9 +26,9 @@ export default async function handle(
 
   if (method === "POST") {
     const { urls } = body;
-    const documents = await getDocuments(urls);
+    const documents : ChunkItem[] = await getDocuments(urls);
     console.log("\nNumber of Documents chunked: \n", documents.length);
-    
+
     let overallPromptTokens = 0;
     let overallTokens = 0;
     let documentLoopVar = 0;
@@ -36,26 +37,29 @@ export default async function handle(
     for (const { url, body } of documents) {
       const input = body.replace(/\n/g, " ");
       input.replace(/\t+/g, " ");
-      
 
       const embeddingResponse = await openAi.createEmbedding({
         model: "text-embedding-ada-002",
         input
       });
-      
 
-      if(embeddingResponse.status != 200){
-        console.log(`\nEmbedding failed for [Doc ${documentLoopVar+1}]:`);
-        return res.status(400).json({ success: false, message: embeddingResponse });
+      if (embeddingResponse.status != 200) {
+        console.log(`\nEmbedding failed for [Doc ${documentLoopVar + 1}]:`);
+        return res
+          .status(400)
+          .json({ success: false, message: embeddingResponse });
       }
 
-      console.log(`\nEmbedding Response [Doc ${documentLoopVar+1} / ${documentsCount}]:`);
-      console.log(`Prompt Token usage: ${embeddingResponse.data.usage.prompt_tokens}`);
+      console.log(
+        `\nEmbedding Response [Doc ${documentLoopVar + 1} / ${documentsCount}]:`
+      );
+      console.log(
+        `Prompt Token usage: ${embeddingResponse.data.usage.prompt_tokens}`
+      );
       // console.log(embeddingResponse.data);
       overallPromptTokens += embeddingResponse.data.usage.prompt_tokens;
       overallTokens += embeddingResponse.data.usage.total_tokens;
-      
-      
+
       const [{ embedding }] = embeddingResponse.data.data;
 
       await supabaseClient.from("documents").insert({
@@ -63,13 +67,12 @@ export default async function handle(
         embedding,
         url
       });
-      
+
       documentLoopVar++;
     }
 
     console.log(`Overall Prompt Token usage: ${overallPromptTokens}`);
     console.log(`Overall Token usage: ${overallTokens}`);
-
 
     return res.status(200).json({ success: true });
   }
@@ -85,29 +88,18 @@ export default async function handle(
  * @param urls - Array of URLs to load
  * @returns documents - Array of documents
  */
-async function getDocuments(urls: string[]) {
-  const documents = [];
+async function getDocuments(urls: string[]) : Promise<ChunkItem[]>{
+  const chunkItems: ChunkItem[] = [];
   for (const url of urls) {
     const html = await loadWebpage(url);
-    const $ = cheerio.load(html);
 
-    let articleText: string = $("body").text();
+    const _chunks = ChunkTheHTML(html);
 
-    // Clean up the text
-    articleText = articleText.replace(/\n+/g, " ");
-    articleText = articleText.replace(/\t+/g, " ");
-    articleText = articleText.replace(/\s+/g, " ");
-    
-
-    let start = 0;
-    while (start < articleText.length) {
-      const end = start + docSize;
-      const chunk = articleText.slice(start, end);
-      documents.push({ url, body: chunk });
-      start = end;
-    }
+    _chunks.forEach((chunk) => {
+      chunkItems.push({ url, body: chunk });
+    });
   }
-  return documents;
+  return chunkItems;
 }
 
 /**
