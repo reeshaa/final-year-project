@@ -17,6 +17,8 @@ begin
     documents.id,
     documents.content,
     documents.url,
+    -- <=> is cosine distance
+    -- cosine distance = 1 - cosine similarity
     1 - (documents.embedding <=> query_embedding) as similarity
   from documents
   where 1 - (documents.embedding <=> query_embedding) > similarity_threshold

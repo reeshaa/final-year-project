@@ -1,5 +1,5 @@
 import { supabaseClient } from "@/lib/embeddings-supabase";
-import { ChunkItem } from "@/utils/chunking/ChunkItem";
+import { IChunkItem } from "@/utils/chunking/ChunkItem";
 import { ChunkTheHTML } from "@/utils/chunking/chunking";
 import * as cheerio from "cheerio";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -26,7 +26,7 @@ export default async function handle(
 
   if (method === "POST") {
     const { urls } = body;
-    const documents : ChunkItem[] = await getDocuments(urls);
+    const documents : IChunkItem[] = await getDocuments(urls);
     console.log("\nNumber of Documents chunked: \n", documents.length);
 
     let overallPromptTokens = 0;
@@ -88,15 +88,16 @@ export default async function handle(
  * @param urls - Array of URLs to load
  * @returns documents - Array of documents
  */
-async function getDocuments(urls: string[]) : Promise<ChunkItem[]>{
-  const chunkItems: ChunkItem[] = [];
+async function getDocuments(urls: string[]) : Promise<IChunkItem[]>{
+  const chunkItems: IChunkItem[] = [];
   for (const url of urls) {
     const html = await loadWebpage(url);
 
     const _chunks = ChunkTheHTML(html);
 
     _chunks.forEach((chunk) => {
-      chunkItems.push({ url, body: chunk });
+      const cleanUrl=url.trim();
+      chunkItems.push({ url:cleanUrl, body: chunk });
     });
   }
   return chunkItems;
