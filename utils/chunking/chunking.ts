@@ -98,15 +98,17 @@ export function ChunkTheHTML(originalHTML: string): string[] {
     }
   });
   // Add the remaining chunk to the array
-  chunks.push(_chunk);
+  if (_chunk.trim().length > 0) chunks.push(_chunk); // Don't add empty chunks
 
   /**
    * Prefix each chunk with the page metadata
    */
   chunks.forEach((chunk, index) => {
     let metadataPadding = `(${pageMetadata.pageTitle})`;
-    if (pageMetadata.heading1.length>0) metadataPadding += ` (${pageMetadata.heading1}) `;
-    if (pageMetadata.heading2.length>0) metadataPadding += ` (${pageMetadata.heading2}) `;
+    if (pageMetadata.heading1.length > 0)
+      metadataPadding += ` (${pageMetadata.heading1}) `;
+    if (pageMetadata.heading2.length > 0)
+      metadataPadding += ` (${pageMetadata.heading2}) `;
 
     chunks[index] = metadataPadding + chunk;
   });
@@ -166,7 +168,7 @@ function breakSectionIntoPieces(section: string, maxSize: number): string[] {
       _piece = _piece.substring(0, _lastNewLine);
       end = start + _lastNewLine;
     }
-    pieces.push(_piece);
+    if (_piece.trim().length > 0) pieces.push(_piece); // don't add empty pieces
     start = end;
   }
 
