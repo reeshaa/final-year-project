@@ -30,15 +30,15 @@ export default async function handle(
 
     for(const url of urls){
       console.log(`\nURL currently being embedded: ${url}`);
-      const documents : ChunkItem[] = await getDocuments(url);
-      console.log("\nNumber of Documents chunked: \n", documents.length);
+      const chunks : ChunkItem[] = await retrieveDocumentAndChunkIt(url);
+      console.log("\nNumber of chunks created: \n", chunks.length);
 
       let overallPromptTokens = 0;
       let overallTokens = 0;
-      let documentLoopVar = 0;
-      const documentsCount = documents.length;
+      let chunkLoopVar = 0;
+      const chunksCount = chunks.length;
 
-      for (const { url, body } of documents) {
+      for (const { url, body } of chunks) {
         const input = body.replace(/\n/g, " ");
         input.replace(/\t+/g, " ");
 
@@ -48,14 +48,14 @@ export default async function handle(
         });
 
         if (embeddingResponse.status != 200) {
-          console.log(`\nEmbedding failed for [Doc ${documentLoopVar + 1}]:`);
+          console.log(`\nEmbedding failed for [Chunk ${chunkLoopVar + 1}] of [${url}]:`);
           return res
             .status(400)
             .json({ success: false, message: embeddingResponse });
         }
 
         console.log(
-          `\nEmbedding Response [Doc ${documentLoopVar + 1} / ${documentsCount}]:`
+          `\nEmbedding Response [Chunk ${chunkLoopVar + 1} / ${chunksCount}]:`
         );
         console.log(
           `Prompt Token usage: ${embeddingResponse.data.usage.prompt_tokens}`
@@ -72,7 +72,7 @@ export default async function handle(
           url
         });
 
-        documentLoopVar++;
+        chunkLoopVar++;
       }
 
       console.log(`Overall Prompt Token usage: ${overallPromptTokens}`);
@@ -90,10 +90,10 @@ export default async function handle(
 /**
  
  * 
- * @param urls - Array of URLs to load
- * @returns documents - Array of documents
+ * @param url -  URL to load
+ * @returns chunkItems - Array of chunks
  */
-async function getDocuments(url: string) : Promise<ChunkItem[]>{
+async function retrieveDocumentAndChunkIt(url: string) : Promise<ChunkItem[]>{
   const chunkItems: ChunkItem[] = [];
   // for (const url of urls) {
     const html = await loadWebpage(url);
