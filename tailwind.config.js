@@ -33,7 +33,11 @@ module.exports = {
         }
       },
       'light',
-      'dark'
+      'dark',
+      'luxury',
+      'cupcake',
+      'night',
+      'cmyk'
     ],
     base: true,
     utils: true,

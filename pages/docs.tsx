@@ -9,6 +9,7 @@ import MetaTags from "@/components/MetaTags";
 import { ReactNode } from "react";
 import { PageMeta } from "../types";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+import SwitchTheme from "@/components/SwitchTheme";
 
 interface Props {
   children: ReactNode;
@@ -221,7 +222,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
               value={userQ}
               onChange={(e) => setUserQ(e.target.value)}
               rows={4}
-              className="w-full p-2 my-5 border rounded-md shadow-md bg-neutral border-neutral-focus "
+              className="w-full p-2 my-5 border rounded-md shadow-md textarea textarea-bordered"
               placeholder={
                 "e.g. Which department to join? I am interested in so and so things..."
               }
