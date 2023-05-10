@@ -120,8 +120,10 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       contextText += `${content.trim()}\nSOURCE: ${url}\n---\n`;
-      console.log("URL:" + url);
-      console.log("Similarity:" + document.similarity);
+      console.log("URL: " + url);
+      console.log("Similarity: " + document.similarity);
+      console.log("Content :" + content);
+      console.log("\n")
     }
   }
 
