@@ -61,6 +61,8 @@ const Embeddings: NextPage = () => {
   };
 
   const handleDelete = async () => {
+    setUrlStats(url_stats.filter(stats => stats['url']!==deleteUrl))
+
     const response = await fetch("/api/delete-embeddings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -72,8 +74,6 @@ const Embeddings: NextPage = () => {
       // Handle error
       console.log("Generate embeddings did not finish completely.");
     }
-
-    setUrlStats(url_stats.filter(stats => stats['url']!==deleteUrl))
   };
 
   return (

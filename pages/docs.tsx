@@ -208,8 +208,8 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
         cardImage="/bot/docs-og.png"
         url=""
       />
-      <div className="flex flex-col items-center justify-center min-h-screen py-2 mx-auto">
-        <main className="flex flex-col items-center justify-center flex-1 w-full min-h-screen px-4 py-2 mx-auto mt-12 text-center sm:mt-20">
+      <div className="flex flex-col items-center justify-center  py-2 mx-auto">
+        <main className="flex flex-col items-center justify-center flex-1 w-full px-4 py-2 mx-auto mt-12 text-center sm:mt-20">
           <h1 className="max-w-xl text-2xl font-bold sm:text-4xl">
             Ask me anything<sup>*</sup> about MSRIT!
           </h1>
