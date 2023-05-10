@@ -19,6 +19,8 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
   const [loading, setLoading] = useState(false);
   const [userQ, setUserQ] = useState("");
   const [answer, setAanswer] = useState<String>("");
+  const [emails, setEmails] = useState<String[]>([]);
+  const [phones, setPhones] = useState<String[]>([]);
 
   // console.log("Streamed response: ", answer);
 
@@ -31,6 +33,8 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
     }
 
     setAanswer("");
+    setEmails([]);
+    setPhones([]);
     setLoading(true);
     const response = await fetch("/api/docs", {
       method: "POST",
@@ -73,6 +77,10 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
       setAanswer((prev) => prev + chunkValue);
     }
 
+    let _emails = extractEmailIDs(answer);
+    setEmails(_emails);
+    let _phones = extractPhoneNumbers(answer);
+    setPhones(_phones);
     setLoading(false);
   };
 
@@ -102,6 +110,95 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
    *
    */
   const retrieveSourceURLsMetadata = async (_urls: string[]) => {};
+
+  const extractEmailIDs = (text: String) => {
+    const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/g;
+    const emails = text.match(emailRegex);
+    return emails?.map((email) => email.toString()) ?? [];
+  };
+
+  const extractPhoneNumbers = (text: String) => {
+    const phoneRegex = /(\+?\d{2})?(\d{10})/g;
+    const phones = text.match(phoneRegex);
+    return phones?.map((phone) => phone.toString()) ?? [];
+  };
+
+  const AnswerUI = () => {
+    const splitanswer = answer.split("SOURCES:")[0];
+    return (
+      <div
+        className={`p-4 transition bg-neutral border border-neutral-focus shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus  text-left"}`}
+      >
+        <MarkdownRenderer content={splitanswer.trim()} />
+      </div>
+    );
+  };
+
+  const SourcesUI = () => {
+    const splitanswer = answer.split("SOURCES:")[1];
+    if (!splitanswer || splitanswer?.length === 0) {
+      return null;
+    }
+    return (
+      <div
+        className={`p-4 transition bg-neutral border border-neutral-focus shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus  text-left"}`}
+      >
+        <p>SOURCES:</p>
+        <ul>
+          {splitanswer
+            .trim()
+            .split("\n")
+            .filter((url) => url.trim().length > 0)
+            .map((url) =>
+              url.includes("http") ? (
+                <li key={uuidv4()}>
+                  <a
+                    className="underline text-accent"
+                    target="_blank"
+                    href={url.replace(/^-+/g, "")} // Remove leading hyphens
+                  >
+                    {url.replace(/^-+/g, "")}
+                  </a>
+                </li>
+              ) : (
+                <li key={uuidv4()}>{url}</li>
+              )
+            )}
+        </ul>
+      </div>
+    );
+  };
+
+  const EmailUI = () => (
+    <div className="flex flex-wrap items-center justify-start p-2 ">
+      {/* Email icon filled */}
+
+      {emails.map((email) => {
+        return (
+          <div className="flex flex-row space-x-2 p-2 mr-2 mb-2 items-center justify-center bg-neutral border border-none shadow-md rounded-xl ">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-envelope-fill"
+              viewBox="0 0 16 16"
+            >
+              <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z" />
+            </svg>
+
+            <a
+              href={`mailto:${email}`}
+              className="text-md italic underline "
+              // key={email}
+            >
+              {email}
+            </a>
+          </div>
+        );
+      })}
+    </div>
+  );
 
   return (
     <>
@@ -148,6 +245,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
               reverseOrder={false}
               toastOptions={{ duration: 2000 }}
             />
+
             <ResizablePanel>
               <AnimatePresence mode="wait">
                 <motion.div className="my-10 space-y-10">
@@ -158,50 +256,17 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
                           Here is your answer:{" "}
                         </h2>
                       </div>
-                      {answer.split("SOURCES:").map((splitanswer, index) => {
-                        return (
-                          <div
-                            className={`p-4 transition bg-neutral border border-neutral-focus shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus  text-left"}`}
-                            key={index}
-                          >
-                            {index === 0 ? (
-                              <MarkdownRenderer content={splitanswer.trim()} />
-                            ) : (
-                              <>
-                                <p>SOURCES:</p>
-                                <ul>
-                                  {splitanswer
-                                    .trim()
-                                    .split("\n")
-                                    .filter((url) => url.trim().length > 0)
-                                    .map((url) =>
-                                      url.includes("http") ? (
-                                        <li key={uuidv4()}>
-                                          <a
-                                            className="underline text-accent"
-                                            target="_blank"
-                                            href={url.replace(/^-+/g, "")} // Remove leading hyphens
-                                          >
-                                            {url.replace(/^-+/g, "")}
-                                          </a>
-                                        </li>
-                                      ) : (
-                                        <li key={uuidv4()}>{url}</li>
-                                      )
-                                    )}
-                                </ul>
-                              </>
-                            )}
-                            <style>
-                              {`
+
+                      <AnswerUI />
+                      <SourcesUI />
+
+                      <style>
+                        {`
                               p {
                                 margin-bottom: 20px;
                               }
                             `}
-                            </style>
-                          </div>
-                        );
-                      })}
+                      </style>
                     </>
                   )}
                 </motion.div>
