@@ -4,6 +4,7 @@ import axios from "axios";
 
 const Embeddings: NextPage = () => {
   const [urls, setUrls] = useState<string[]>([]);
+  const [deleteUrl, setDeleteUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [url_stats, setUrlStats] = useState([]);
 
@@ -59,20 +60,20 @@ const Embeddings: NextPage = () => {
     getDBStatistics();
   };
 
-  const handleDelete = async (url: String) => {
+  const handleDelete = async () => {
     const response = await fetch("/api/delete-embeddings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query_url: url })
+      body: JSON.stringify({ query_url: deleteUrl })
     });
     console.log(response);
-    setLoading(false);
 
     if (!response.ok) {
       // Handle error
       console.log("Generate embeddings did not finish completely.");
     }
-    getDBStatistics();
+
+    setUrlStats(url_stats.filter(stats => stats['url']!==deleteUrl))
   };
 
   return (
@@ -114,14 +115,15 @@ const Embeddings: NextPage = () => {
                 <th></th>
                 <th>URL</th>
                 <th>Chunks</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {url_stats.map((url_stat, index) => (
-                <tr key={index}>
+                <tr key={index} className="hover">
                   <th>{index + 1}</th>
                   <td>
-                    <a href={url_stat["url"]}>{url_stat["url"]}</a>
+                    <a href={url_stat["url"]} target="_blank">{url_stat["url"]}</a>
                   </td>
                   <td>
                     <center>{url_stat["embeddings_count"]}</center>
@@ -130,13 +132,15 @@ const Embeddings: NextPage = () => {
                     <button
                       className=""
                       type="submit"
-                      disabled={loading}
-                      onClick={()=>handleDelete(url_stat["url"])}
+                      // disabled={loading}
+                      onClick={()=>(setDeleteUrl(url_stat["url"]))}
                     >
+                      <label htmlFor="my-modal-4" >
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
                         <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
                       </svg>
+                     </label>
                       {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg> */}
                     </button>
 
@@ -147,6 +151,20 @@ const Embeddings: NextPage = () => {
           </table>
         </div>
       )}
+
+      <input type="checkbox" id="my-modal-4" className="modal-toggle" />
+      <label htmlFor="my-modal-4" className="modal cursor-pointer">
+        <label className="modal-box relative" htmlFor="">
+          <h3 className="text-lg font-bold">Delete Embeddings</h3>
+          <p className="py-4">Are you sure you want to delete the embeddings for <a href={deleteUrl} target="_blank">{deleteUrl}</a> ?</p>
+            <label htmlFor="my-modal-4" className="btn btn-outline mr-5">Cancel</label>
+            <label htmlFor="my-modal-4" className="btn btn-primary" onClick={()=>{handleDelete()}}>
+          Delete
+          
+          {/* </button> */}
+          </label>
+        </label>
+      </label>
     </div>
   );
 };
