@@ -25,7 +25,8 @@
       "@/images/*": ["public/images/*"],
       "@/data/*": ["data/*"],
       "@/services/*": ["services/*"],
-      "@/lib/*": ["lib/*"]
+      "@/lib/*": ["lib/*"],
+      "@/models/*": ["models/*"]
 
     },
     "incremental": true
