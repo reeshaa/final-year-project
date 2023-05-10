@@ -209,6 +209,9 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
         url=""
       />
       <div className="flex flex-col items-center justify-center  py-2 mx-auto">
+      <div className="flex justify-end w-full p-2">
+          <SwitchTheme/>
+      </div>
         <main className="flex flex-col items-center justify-center flex-1 w-full px-4 py-2 mx-auto mt-12 text-center sm:mt-20">
           <h1 className="max-w-xl text-2xl font-bold sm:text-4xl">
             Ask me anything<sup>*</sup> about MSRIT!

@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import SwitchTheme from "@/components/SwitchTheme";
 
 const Embeddings: NextPage = () => {
   const [urls, setUrls] = useState<string[]>([]);
@@ -78,6 +79,10 @@ const Embeddings: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center max-w-xxl m-auto text-center">
+
+        <div className="flex justify-end w-full p-2">
+          <SwitchTheme/>
+      </div>
       <h1 className="w-full my-5 text-2xl font-bold sm:text-4xl ">
         Generate embeddings
       </h1>

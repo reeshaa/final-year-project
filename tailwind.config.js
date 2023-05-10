@@ -31,7 +31,9 @@ module.exports = {
 
           error: "#FB7085"
         }
-      }
+      },
+      'light',
+      'dark'
     ],
     base: true,
     utils: true,
