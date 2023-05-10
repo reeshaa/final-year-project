@@ -7,8 +7,8 @@ export default async function handle(
   res: NextApiResponse
 ) {
   // use path package to get the path to the file
-  // const html = await LoadWebpage("https://msrit.edu/department/faculty.html?dept=cse.html#start");
-  const html = TestHTML;
+  const html = await LoadWebpage("https://msrit.edu/department/cse_cs.html");
+  // const html = TestHTML;
   const chunks = ChunkTheHTML(html);
   return res.json(chunks);
 }
