@@ -26,54 +26,59 @@ export default async function handle(
 
   if (method === "POST") {
     const { urls } = body;
-    const documents : IChunkItem[] = await getDocuments(urls);
-    console.log("\nNumber of Documents chunked: \n", documents.length);
+    console.log(`\nNo. of urls: ${urls.length}`);
 
-    let overallPromptTokens = 0;
-    let overallTokens = 0;
-    let documentLoopVar = 0;
-    const documentsCount = documents.length;
+    for(const url of urls){
+      console.log(`\nURL currently being embedded: ${url}`);
+      const chunks : IChunkItem[] = await retrieveDocumentAndChunkIt(url);
+      console.log("\nNumber of chunks created: \n", chunks.length);
 
-    for (const { url, body } of documents) {
-      const input = body.replace(/\n/g, " ");
-      input.replace(/\t+/g, " ");
+      let overallPromptTokens = 0;
+      let overallTokens = 0;
+      let chunkLoopVar = 0;
+      const chunksCount = chunks.length;
 
-      const embeddingResponse = await openAi.createEmbedding({
-        model: "text-embedding-ada-002",
-        input
-      });
+      for (const { url, body } of chunks) {
+        const input = body.replace(/\n/g, " ");
+        input.replace(/\t+/g, " ");
 
-      if (embeddingResponse.status != 200) {
-        console.log(`\nEmbedding failed for [Doc ${documentLoopVar + 1}]:`);
-        return res
-          .status(400)
-          .json({ success: false, message: embeddingResponse });
+        const embeddingResponse = await openAi.createEmbedding({
+          model: "text-embedding-ada-002",
+          input
+        });
+
+        if (embeddingResponse.status != 200) {
+          console.log(`\nEmbedding failed for [Chunk ${chunkLoopVar + 1}] of [${url}]:`);
+          return res
+            .status(400)
+            .json({ success: false, message: embeddingResponse });
+        }
+
+        console.log(
+          `\nEmbedding Response [Chunk ${chunkLoopVar + 1} / ${chunksCount}]:`
+        );
+        console.log(
+          `Prompt Token usage: ${embeddingResponse.data.usage.prompt_tokens}`
+        );
+        // console.log(embeddingResponse.data);
+        overallPromptTokens += embeddingResponse.data.usage.prompt_tokens;
+        overallTokens += embeddingResponse.data.usage.total_tokens;
+
+        const [{ embedding }] = embeddingResponse.data.data;
+
+        await supabaseClient.from("documents").insert({
+          content: input,
+          embedding,
+          url
+        });
+
+        chunkLoopVar++;
       }
 
-      console.log(
-        `\nEmbedding Response [Doc ${documentLoopVar + 1} / ${documentsCount}]:`
-      );
-      console.log(
-        `Prompt Token usage: ${embeddingResponse.data.usage.prompt_tokens}`
-      );
-      // console.log(embeddingResponse.data);
-      overallPromptTokens += embeddingResponse.data.usage.prompt_tokens;
-      overallTokens += embeddingResponse.data.usage.total_tokens;
-
-      const [{ embedding }] = embeddingResponse.data.data;
-
-      await supabaseClient.from("documents").insert({
-        content: input,
-        embedding,
-        url
-      });
-
-      documentLoopVar++;
+      console.log(`Overall Prompt Token usage: ${overallPromptTokens}`);
+      console.log(`Overall Token usage: ${overallTokens}`);
+      continue;
     }
-
-    console.log(`Overall Prompt Token usage: ${overallPromptTokens}`);
-    console.log(`Overall Token usage: ${overallTokens}`);
-
     return res.status(200).json({ success: true });
   }
 
@@ -85,12 +90,12 @@ export default async function handle(
 /**
  
  * 
- * @param urls - Array of URLs to load
- * @returns documents - Array of documents
+ * @param url -  URL to load
+ * @returns chunkItems - Array of chunks
  */
-async function getDocuments(urls: string[]) : Promise<IChunkItem[]>{
+async function retrieveDocumentAndChunkIt(url: string) : Promise<IChunkItem[]>{
   const chunkItems: IChunkItem[] = [];
-  for (const url of urls) {
+  // for (const url of urls) {
     const html = await loadWebpage(url);
 
     const _chunks = ChunkTheHTML(html);
@@ -99,7 +104,7 @@ async function getDocuments(urls: string[]) : Promise<IChunkItem[]>{
       const cleanUrl=url.trim();
       chunkItems.push({ url:cleanUrl, body: chunk });
     });
-  }
+  // }
   return chunkItems;
 }
 
