@@ -17,7 +17,7 @@ const Embeddings: NextPage = () => {
       .then(function (response) {
         let body = response.data;
         let _data = body.data;
-        sortURLStats(_data);
+        // sortURLStatsAlphabetically(_data);
         if (body.success) setUrlStats(_data);
       })
       .catch(function (error) {
@@ -25,7 +25,7 @@ const Embeddings: NextPage = () => {
       });
   };
 
-  const sortURLStats = (url_stats: {
+  const sortURLStatsAlphabetically = (url_stats: {
     sort(
       arg0: (
         a: { url: string; embeddings_count: any },
