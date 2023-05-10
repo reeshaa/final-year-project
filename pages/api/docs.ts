@@ -1,9 +1,8 @@
 import { supabaseClient } from "@/lib/embeddings-supabase";
 import { OpenAIStream, OpenAIStreamPayload } from "@/utils/OpenAIStream";
-import { SystemContent, UserContent, AssistantContent } from "@/utils/Prompts";
-import { oneLine, stripIndent } from "common-tags";
+import { AssistantContent, SystemContent, UserContent } from "@/utils/Prompts";
 import GPT3Tokenizer from "gpt3-tokenizer";
-import { Configuration, OpenAIApi } from "openai";
+import { Configuration } from "openai";
 
 const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -78,14 +77,12 @@ const handler = async (req: Request): Promise<Response> => {
   console.log("Embedding constructed for the input.");
   // console.log("embedding: ", embedding);
 
-  const { data: documents, error: supabase_error } = await supabaseClient.rpc(
-    "match_documents",
-    {
+  const { data: matchedDocuments, error: supabase_error } =
+    await supabaseClient.rpc("match_documents", {
       query_embedding: embedding,
       similarity_threshold: 0.1, // threshold to tweek
-      match_count: 10  // top matches count
-    }
-  );
+      match_count: 10 // top matches count
+    });
 
   if (supabase_error) {
     console.error(supabase_error);
@@ -101,14 +98,16 @@ const handler = async (req: Request): Promise<Response> => {
   let tokenCount = 0;
   let contextText = "";
 
-  console.log("No. of documents retrieved from Supabase: ", documents?.length);
+  console.log(
+    "No. of documents retrieved from Supabase: ",
+    matchedDocuments?.length
+  );
 
   console.log("Constructing context.....");
-
   // Concat matched documents
-  if (documents) {
-    for (let i = 0; i < documents.length; i++) {
-      const document = documents[i];
+  if (matchedDocuments) {
+    for (let i = 0; i < matchedDocuments.length; i++) {
+      const document = matchedDocuments[i];
       const content = document.content;
       const url = document.url;
       // console.log(document.url)
@@ -121,7 +120,8 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       contextText += `${content.trim()}\nSOURCE: ${url}\n---\n`;
-      console.log("url:" + url);
+      console.log("URL:" + url);
+      console.log("Similarity:" + document.similarity);
     }
   }
 
@@ -146,9 +146,9 @@ const handler = async (req: Request): Promise<Response> => {
   console.log("userContentTokenCount: ", _userContentTokenCount);
   let _systemContentTokenCount = tokenizer.encode(SystemContent).text.length;
   console.log("systemContentTokenCount: ", _systemContentTokenCount);
-  let _assistantContentTokenCount = tokenizer.encode(AssistantContent).text.length;
+  let _assistantContentTokenCount =
+    tokenizer.encode(AssistantContent).text.length;
   console.log("assistantContentTokenCount: ", _assistantContentTokenCount);
-
 
   const messages = [
     {
