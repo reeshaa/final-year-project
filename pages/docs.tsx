@@ -128,7 +128,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
     const splitanswer = answer.split("SOURCES:")[0];
     return (
       <div
-        className={`p-4 transition bg-neutral border border-neutral-focus shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus  text-left"}`}
+        className={`p-4 transition textarea textarea-bordered  shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus  text-left"}`}
       >
         <MarkdownRenderer content={splitanswer.trim()} />
       </div>
@@ -142,9 +142,9 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
     }
     return (
       <div
-        className={`p-4 transition bg-neutral border border-neutral-focus shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus  text-left"}`}
+        className={`p-4 transition textarea textarea-bordered  shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus  text-left"}`}
       >
-        <p>SOURCES:</p>
+        <p><b>SOURCES:</b></p>
         <ul>
           {splitanswer
             .trim()
@@ -154,7 +154,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
               url.includes("http") ? (
                 <li key={uuidv4()}>
                   <a
-                    className="underline text-accent"
+                    className="underline text-primary font-medium"
                     target="_blank"
                     href={url.replace(/^-+/g, "")} // Remove leading hyphens
                   >
