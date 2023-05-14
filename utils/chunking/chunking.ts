@@ -106,8 +106,8 @@ export function ChunkTheHTML(originalHTML: string): string[] {
    */
   chunks.forEach((chunk, index) => {
     let metadataPadding = `(${pageMetadata.pageTitle})`;
-    if (pageMetadata.heading1.length > 0)
-      metadataPadding += ` (${pageMetadata.heading1}) `;
+    // if (pageMetadata.heading1.length > 0)
+    //   metadataPadding += ` (${pageMetadata.heading1}) `;
     if (pageMetadata.heading2.length > 0)
       metadataPadding += ` (${pageMetadata.heading2}) `;
 
