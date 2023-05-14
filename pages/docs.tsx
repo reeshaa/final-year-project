@@ -1,15 +1,14 @@
+import LoadingDots from "@/components/LoadingDots";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
+import MetaTags from "@/components/MetaTags";
+import ResizablePanel from "@/components/ResizablePanel";
 import { AnimatePresence, motion } from "framer-motion";
 import type { NextPage } from "next";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
-import LoadingDots from "@/components/LoadingDots";
-import ResizablePanel from "@/components/ResizablePanel";
-import MetaTags from "@/components/MetaTags";
-import { ReactNode } from "react";
+import { Navbar } from "../components/Navbar";
 import { PageMeta } from "../types";
-import MarkdownRenderer from "@/components/MarkdownRenderer";
-import SwitchTheme from "@/components/SwitchTheme";
 
 interface Props {
   children: ReactNode;
@@ -144,7 +143,9 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
       <div
         className={`p-4 transition textarea textarea-bordered  shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus  text-left"}`}
       >
-        <p><b>SOURCES:</b></p>
+        <p>
+          <b>SOURCES:</b>
+        </p>
         <ul>
           {splitanswer
             .trim()
@@ -210,9 +211,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
         url=""
       />
       <div className="flex flex-col items-center justify-center  py-2 mx-auto">
-      <div className="flex justify-end w-full p-2">
-          <SwitchTheme/>
-      </div>
+        <Navbar />
         <main className="flex flex-col items-center justify-center flex-1 w-full px-4 py-2 mx-auto mt-12 text-center sm:mt-20">
           <h1 className="max-w-xl text-2xl font-bold sm:text-4xl">
             Ask me anything<sup>*</sup> about MSRIT!
@@ -230,7 +229,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
 
             {!loading && (
               <button
-                className="w-full px-4 py-2 mt-2 font-mediu btn btn-primary"
+                className="w-full px-4 py-2 mt-2 font-medium btn btn-primary text-white"
                 onClick={(e) => generateAnswer(e)}
               >
                 Ask your question &rarr;
@@ -295,3 +294,5 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
 };
 
 export default DocsPage;
+
+
