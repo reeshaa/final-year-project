@@ -219,7 +219,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
         <Navbar />
         <main className="flex flex-col items-center justify-center flex-1 w-full px-4 py-2 mx-auto mt-12 text-center sm:mt-20">
           <h1 className="max-w-xl text-2xl font-bold sm:text-4xl">
-            Ask me anything<sup>*</sup> about MSRIT!
+            Ask me a question about MSRIT!
           </h1>
           <div className="w-full max-w-xl">
             <textarea
@@ -237,7 +237,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
                 className="w-full px-4 py-2 mt-2 font-medium btn btn-primary text-white"
                 onClick={(e) => generateAnswer(e)}
               >
-                Ask your question &rarr;
+                Ask me a question &rarr;
               </button>
             )}
             {loading && (

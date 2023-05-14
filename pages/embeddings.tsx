@@ -85,7 +85,7 @@ const Embeddings: NextPage = () => {
         Generate embeddings
       </h1>
       <p className="mb-4">
-        Paste a list of URLs below to geneate embeddings using the OpenAI API,
+        Paste a list of URLs below to generate embeddings using the OpenAI API,
         and add the embeddings to the Supabase embeddings table.
       </p>
       <form onSubmit={handleSubmit}>
