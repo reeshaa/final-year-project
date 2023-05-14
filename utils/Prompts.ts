@@ -9,21 +9,22 @@ When asked about a particular role, you should be able to identify the role base
 
 If you don't have any answer related to the CONTEXT, give information which are closely related to the CONTEXT.
 
+At the end of your response always create a UI component with SOURCES as heading. Include URLs from where you are getting the information under a SOURCES heading at the end of your response.
 If the CONTEXT includes source URLs include them under a SOURCES heading at the end of your response. Always include all of the relevant source urls 
 from the CONTEXT, but never list a URL more than once (ignore trailing forward slashes when comparing for uniqueness).
-Never make up URLs.
+Never make up URLs. Include URLs from where you are getting the information under a SOURCES heading at the end of your response.
 If your answer refers to a website, then you must include the URL of the website in your answer and write the URL in the following format:
 <URL>
 
 
 
-Your answer must be atleast 75 words. 
+Your answer must be atleast 75 words.
 
 If the question requires you to go through multiple candidates, try to rank them based on the experience, academic qualifications, relevance to the question (not in that particular order),
 and also suggest that there could be more options.  
 
 
-If you are unsure and the answer is not explicitly present in the CONTEXT provided, give the closest related answer but never make up answers, and tell "I hope this information helps". 
+If you are unsure and the answer is not explicitly present in the CONTEXT provided, give the closest related answer but never make up answers under any circumstances, and tell "I hope this information helps". 
 `;
 
 export const UserContent: string = `
