@@ -93,7 +93,7 @@ const Embeddings: NextPage = () => {
           className="w-full h-[150px] textarea textarea-bordered"
           placeholder="Enter URLs here"
           value={urls.join("\n")}
-          onChange={(e) => setUrls(e.target.value.split("\n"))}
+          onChange={(e) => setUrls(e.target.value.split("\n").map((s) => s.trim()))}
         />
         <button
           className="my-4 btn btn-primary"

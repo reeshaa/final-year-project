@@ -1,5 +1,6 @@
 {
   "maths": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=maths&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=maths&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=maths&ID=11",
@@ -25,6 +26,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=maths&ID=9"
   ],
   "cse": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=cse&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=cse&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=cse&ID=11",
@@ -56,6 +58,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=cse&ID=9"
   ],
   "te": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=te&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=te&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=te&ID=11",
@@ -70,6 +73,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=te&ID=9"
   ],
   "physics": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=physics&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=physics&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=physics&ID=11",
@@ -83,6 +87,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=physics&ID=9"
   ],
   "civil-engineering": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=civil-engineering&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=civil-engineering&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=civil-engineering&ID=11",
@@ -114,6 +119,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=civil-engineering&ID=9"
   ],
   "mca": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=mca&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=mca&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=mca&ID=12",
@@ -127,6 +133,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=mca&ID=9"
   ],
   "chemical-engineering": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=chemical-engineering&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=chemical-engineering&ID=11",
     "https://msrit.edu/department/faculty-detail.html?dept=chemical-engineering&ID=12",
@@ -141,6 +148,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=chemical-engineering&ID=9"
   ],
   "architecture": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=architecture&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=architecture&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=architecture&ID=11",
@@ -177,6 +185,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=architecture&ID=9"
   ],
   "humanities": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=humanities&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=humanities&ID=2",
     "https://msrit.edu/department/faculty-detail.html?dept=humanities&ID=3",
@@ -187,12 +196,14 @@
     "https://msrit.edu/department/faculty-detail.html?dept=humanities&ID=8"
   ],
   "cse_cs": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=cse_cs&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=cse_cs&ID=2",
     "https://msrit.edu/department/faculty-detail.html?dept=cse_cs&ID=3",
     "https://msrit.edu/department/faculty-detail.html?dept=cse_cs&ID=4"
   ],
   "iem": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=iem&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=iem&ID=11",
     "https://msrit.edu/department/faculty-detail.html?dept=iem&ID=12",
@@ -207,19 +218,26 @@
     "https://msrit.edu/department/faculty-detail.html?dept=iem&ID=8",
     "https://msrit.edu/department/faculty-detail.html?dept=iem&ID=9"
   ],
-  "certificate-programs": [],
+  "certificate-programs": [
+    
+  ],
   "ai_ml": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=ai_ml&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=ai_ml&ID=2",
     "https://msrit.edu/department/faculty-detail.html?dept=ai_ml&ID=3"
   ],
-  "int-411": [],
+  "int-411": [
+    
+  ],
   "ai_ds": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=ai_ds&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=ai_ds&ID=2",
     "https://msrit.edu/department/faculty-detail.html?dept=ai_ds&ID=3"
   ],
   "mba": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=mba&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=mba&ID=11",
     "https://msrit.edu/department/faculty-detail.html?dept=mba&ID=12",
@@ -235,6 +253,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=mba&ID=9"
   ],
   "ece": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=ece&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=ece&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=ece&ID=11",
@@ -268,6 +287,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=ece&ID=9"
   ],
   "eie": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=eie&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=eie&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=eie&ID=11",
@@ -281,11 +301,13 @@
     "https://msrit.edu/department/faculty-detail.html?dept=eie&ID=9"
   ],
   "cse_ai_ml": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=cse_ai_ml&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=cse_ai_ml&ID=2",
     "https://msrit.edu/department/faculty-detail.html?dept=cse_ai_ml&ID=3"
   ],
   "ise": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=ise&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=ise&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=ise&ID=11",
@@ -315,6 +337,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=ise&ID=9"
   ],
   "biotechnology": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=biotechnology&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=biotechnology&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=biotechnology&ID=11",
@@ -333,6 +356,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=biotechnology&ID=9"
   ],
   "eee": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=eee&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=eee&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=eee&ID=11",
@@ -352,7 +376,8 @@
     "https://msrit.edu/department/faculty-detail.html?dept=eee&ID=8",
     "https://msrit.edu/department/faculty-detail.html?dept=eee&ID=9"
   ],
-  "medical-engineering": [
+  "medical-electronics": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=medical-electronics&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=medical-electronics&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=medical-electronics&ID=2",
@@ -365,6 +390,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=medical-electronics&ID=9"
   ],
   "me": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=me&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=me&ID=12",
     "https://msrit.edu/department/faculty-detail.html?dept=me&ID=13",
@@ -406,6 +432,7 @@
     "https://msrit.edu/department/faculty-detail.html?dept=me&ID=7"
   ],
   "chemistry": [
+    
     "https://msrit.edu/department/faculty-detail.html?dept=chemistry&ID=1",
     "https://msrit.edu/department/faculty-detail.html?dept=chemistry&ID=10",
     "https://msrit.edu/department/faculty-detail.html?dept=chemistry&ID=2",
