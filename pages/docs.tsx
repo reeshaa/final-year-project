@@ -19,8 +19,6 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
   const [loading, setLoading] = useState(false);
   const [userQ, setUserQ] = useState("");
   const [answer, setAanswer] = useState<String>("");
-  const [emails, setEmails] = useState<String[]>([]);
-  const [phones, setPhones] = useState<String[]>([]);
 
   // console.log("Streamed response: ", answer);
 
@@ -33,8 +31,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
     }
 
     setAanswer("");
-    setEmails([]);
-    setPhones([]);
+
     setLoading(true);
     const response = await fetch("/api/docs", {
       method: "POST",
@@ -77,39 +74,8 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
       setAanswer((prev) => prev + chunkValue);
     }
 
-    let _emails = extractEmailIDs(answer);
-    setEmails(_emails);
-    let _phones = extractPhoneNumbers(answer);
-    setPhones(_phones);
     setLoading(false);
   };
-
-  /**
-   * TODO: We need to prettify the URLs returned as a part of SOURCES
-   * @reesha please do this
-   *
-   *  For this, you can use the API endpoint: /api/link-metadata
-   *
-   * API Docs:
-   * Request Type: POST
-   * Request Body: {
-   *    urls: string[]
-   * }
-   *
-   * Response: {
-   *  url: string,
-   * title: string,
-   * description: string,
-   * siteName: string,
-   * favicons: string[],
-   * contentType: string,
-   * mediaType: string,
-   * images: string[],
-   * videos: string[],
-   * }
-   *
-   */
-  const retrieveSourceURLsMetadata = async (_urls: string[]) => {};
 
   const extractEmailIDs = (text: String) => {
     const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/g;
@@ -141,7 +107,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
     }
     return (
       <div
-        className={`p-4 transition textarea textarea-bordered  shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus  text-left"}`}
+        className={`p-4 transition textarea textarea-bordered  shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus text-left"}`}
       >
         <p>
           <b>SOURCES:</b>
@@ -155,7 +121,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
               url.includes("http") ? (
                 <li key={uuidv4()}>
                   <a
-                    className="underline text-primary font-medium"
+                    className="underline text-primary font-medium text-left"
                     target="_blank"
                     href={url.replace(/^-+/g, "")} // Remove leading hyphens
                   >
@@ -171,36 +137,75 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
     );
   };
 
-  const EmailUI = () => (
-    <div className="flex flex-wrap items-center justify-start p-2 ">
-      {/* Email icon filled */}
+  const ContactDetailsUI = () => {
+    let emails = extractEmailIDs(answer);
 
-      {emails.map((email) => {
-        return (
-          <div className="flex flex-row space-x-2 p-2 mr-2 mb-2 items-center justify-center bg-neutral border border-none shadow-md rounded-xl ">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-envelope-fill"
-              viewBox="0 0 16 16"
-            >
-              <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z" />
-            </svg>
+    let phones = extractPhoneNumbers(answer);
 
-            <a
-              href={`mailto:${email}`}
-              className="text-md italic underline "
-              // key={email}
-            >
-              {email}
-            </a>
-          </div>
-        );
-      })}
-    </div>
-  );
+    if (!emails || emails.length === 0) {
+      return null;
+    }
+
+    return (
+      <div
+        className={`p-4 transition textarea textarea-bordered shadow-md rounded-xl overflow-x-auto max-w-xl ${"hover:border-accent-focus text-left"}`}
+      >
+        <div className="flex flex-wrap ">
+          {emails.map((email) => {
+            return (
+              <div className="flex flex-row space-x-2 mr-4 items-center justify-start ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="#0EA5E9"
+                  className="bi bi-envelope-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z" />
+                </svg>
+
+                <a
+                  href={`mailto:${email}`}
+                  className="text-primary font-medium text-left italic underline "
+                  // key={email}
+                >
+                  {email}
+                </a>
+              </div>
+            );
+          })}
+          {phones.map((phone) => {
+            return (
+              <div className="flex flex-row space-x-2 mr-4 items-center justify-start ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="#0EA5E9"
+                  className="bi bi-telephone-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"
+                  />
+                </svg>
+
+                <a
+                  href={`tel:${phone}`}
+                  className="text-primary font-medium text-left italic underline "
+                  // key={email}
+                >
+                  {phone}
+                </a>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -261,6 +266,7 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
                       </div>
 
                       <AnswerUI />
+                      <ContactDetailsUI />
                       <SourcesUI />
 
                       <style>
@@ -294,5 +300,3 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
 };
 
 export default DocsPage;
-
-
