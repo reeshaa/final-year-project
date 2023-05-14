@@ -189,7 +189,7 @@ function extractDocumentMetadata($: CheerioAPI): {
   let heading2 = $("h2").first().text().trim();
 
   console.log("pageTitle: " + pageTitle);
-  console.log("heading1: " + heading1);
+  // console.log("heading1: " + heading1);
   console.log("heading2: " + heading2);
 
   return {
