@@ -4,11 +4,17 @@ import axios from "axios";
 import SwitchTheme from "@/components/SwitchTheme";
 import { Navbar } from "@/components/Navbar";
 
+interface IUrlStats {
+  "url": string;
+  "embeddings_count": string;
+}
 const Embeddings: NextPage = () => {
   const [urls, setUrls] = useState<string[]>([]);
   const [deleteUrl, setDeleteUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [url_stats, setUrlStats] = useState([]);
+  const [url_stats, setUrlStats] = useState<IUrlStats[]>([]);
+  const [filter_url_stats, setFilterUrlStats] = useState<IUrlStats[]>([]);
+
 
   useEffect(() => {
     getDBStatistics();
@@ -21,7 +27,10 @@ const Embeddings: NextPage = () => {
         let body = response.data;
         let _data = body.data;
         // sortURLStatsAlphabetically(_data);
-        if (body.success) setUrlStats(_data);
+        if (body.success) {
+          console.log(_data[0])
+          setUrlStats(_data);
+          setFilterUrlStats(_data)}
       })
       .catch(function (error) {
         console.log(error);
@@ -63,7 +72,7 @@ const Embeddings: NextPage = () => {
   };
 
   const handleDelete = async () => {
-    setUrlStats(url_stats.filter((stats) => stats["url"] !== deleteUrl));
+    setUrlStats(filter_url_stats.filter((stats) => stats["url"] !== deleteUrl));
 
     const response = await fetch("/api/delete-embeddings", {
       method: "POST",
@@ -77,7 +86,10 @@ const Embeddings: NextPage = () => {
       console.log("Generate embeddings did not finish completely.");
     }
   };
-
+ const filter = (e:any)=>{
+  const keyword=e.target.value
+  setFilterUrlStats(url_stats.filter(stats => stats["url"].includes(keyword)))
+ };
   return (
     <div className="flex flex-col items-center max-w-xxl m-auto text-center">
       <Navbar />
@@ -112,6 +124,13 @@ const Embeddings: NextPage = () => {
       )}
       {url_stats.length > 0 && (
         <div className="overflow-x-auto w-5/6">
+    
+   <div className="input-group flex justify-end w-full pb-2 p-1">
+   <button className="bg-base-100 btn btn-outline border-r-0 btn-disabled btn-square btn-sm ">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" className="h-5 w-5" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+    </button>
+          <input type="text" placeholder="Search" className="input input-bordered border-l-0 pl-0 w-full max-w-xs input-sm focus:outline-none" onChange={filter}/>
+      </div>
           <table className="table table-compact w-full">
             <thead>
               <tr>
@@ -122,7 +141,7 @@ const Embeddings: NextPage = () => {
               </tr>
             </thead>
             <tbody>
-              {url_stats.map((url_stat, index) => (
+              {filter_url_stats.map((url_stat, index) => (
                 <tr key={index} className="hover">
                   <th>{index + 1}</th>
                   <td>

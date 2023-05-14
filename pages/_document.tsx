@@ -5,7 +5,7 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head />
-        <body className="bg-[url('/images/background.png')] bg-no-repeat bg-cover min-h-screen">
+        <body className="bg-[url('/images/background.png')] bg-no-repeat bg-cover min-h-screen overflow-y-scroll">
           <Main />
           <NextScript />
         </body>
