@@ -45,13 +45,15 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
     console.log("Edge function returned.");
 
     if (!response.ok) {
-      console.log("Response received by frontend: ", response);
+      // console.log("Response received by frontend: ", response);
       setLoading(false);
       if (response.status === 500) {
         console.log("Response Status Text: ", response.statusText);
-        toast.error(response.statusText);
-      }
-      toast.error("Something went wrong!");
+        toast.error(
+          "Server Error:\nPlease check your internet connection and try again"
+        );
+        return;
+      } else toast.error("Something went wrong!");
       console.log("Response body: ", response.body);
       // Instead of throwing an error and crashing the app, we will show the error message as the
       // streamed response
@@ -222,24 +224,26 @@ const DocsPage: NextPage<Props> = ({ children, meta: pageMeta }: Props) => {
             Ask me a question about MSRIT!
           </h1>
           <div className="w-full max-w-xl">
-            <textarea
-              value={userQ}
-              onChange={(e) => setUserQ(e.target.value)}
-              rows={4}
-              className="w-full p-2 my-5 border rounded-md shadow-md textarea textarea-bordered"
-              placeholder={
-                "e.g. Which department to join? I am interested in so and so things..."
-              }
-            />
+            <form onSubmit={(e) => generateAnswer(e)}>
+              <input
+                value={userQ}
+                onChange={(e) => setUserQ(e.target.value)}
+                name="question"
+                className="w-full p-2 my-5 border rounded-md shadow-md textarea textarea-bordered"
+                placeholder={
+                  "e.g. Which department to join? I am interested in so and so things..."
+                }
+              />
 
-            {!loading && (
-              <button
-                className="w-full px-4 py-2 mt-2 font-medium btn btn-primary text-white"
-                onClick={(e) => generateAnswer(e)}
-              >
-                Ask me a question &rarr;
-              </button>
-            )}
+              {!loading && (
+                <button
+                  className="w-full px-4 py-2 mt-2 font-medium btn btn-primary text-white"
+                  type="submit"
+                >
+                  Ask me a question &rarr;
+                </button>
+              )}
+            </form>
             {loading && (
               <button
                 className="w-full px-4 py-2 mt-2 font-mediu btn btn-primary"

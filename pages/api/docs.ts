@@ -115,7 +115,7 @@ const handler = async (req: Request): Promise<Response> => {
       tokenCount += encoded.text.length;
 
       // Limit context to max 3500 tokens (configurable)
-      if (tokenCount > 3500) {
+      if (tokenCount > 3000) {
         break;
       }
 

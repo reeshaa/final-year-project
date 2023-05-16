@@ -11,15 +11,15 @@ const HomePage: NextPage = () => {
         <SwitchTheme/>
       </div>
      
-      <div className="flex flex-col items-center px-6 mx-auto max-w-5xl ">
+      <div className="flex flex-col items-center px-6 m-auto max-w-5xl ">
 
-        <div className="flex flex-col w-full lg:flex-row py-10">
+        {/* <div className="flex flex-col w-full lg:flex-row py-10">
           <ColumnCards title="Capabilities" contentList={capabilitiesList}/>
           <div className="divider lg:divider-horizontal"/> 
           <ColumnCards title="Examples" contentList={examplesList}/>
           <div className="divider lg:divider-horizontal"/> 
           <ColumnCards title="Limitations" contentList={limitationsList}/>
-        </div> 
+        </div>  */}
 
         <h1 className="max-w-xxl text-4xl font-extrabold">
           ChatBot to Answer your Questions Regarding MSRIT

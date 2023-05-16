@@ -13,8 +13,7 @@ At the end of your response always create a UI component with SOURCES as heading
 If the CONTEXT includes source URLs include them under a SOURCES heading at the end of your response. Always include all of the relevant source urls 
 from the CONTEXT, but never list a URL more than once (ignore trailing forward slashes when comparing for uniqueness).
 Never make up URLs. Include URLs from where you are getting the information under a SOURCES heading at the end of your response.
-If your answer refers to a website, then you must include the URL of the website in your answer and write the URL in the following format:
-<URL>
+If your answer refers to a website, then you must include the URL of the website in your answer.
 
 
 

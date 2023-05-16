@@ -27,9 +27,11 @@ export default async function handle(
   if (method === "POST") {
     const { urls } = body;
     console.log(`\nNo. of urls: ${urls.length}`);
-
+    let _urlLoopVar = 0;
     for(const url of urls){
       console.log(`\nURL currently being embedded: ${url}`);
+      _urlLoopVar++;
+      console.log(`URL Loop Var: ${_urlLoopVar}`);
       const chunks : IChunkItem[] = await retrieveDocumentAndChunkIt(url);
       console.log("\nNumber of chunks created: \n", chunks.length);
 

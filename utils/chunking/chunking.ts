@@ -23,8 +23,8 @@ export function ChunkTheHTML(originalHTML: string): string[] {
 
   let pageMetadata = extractDocumentMetadata($);
 
-  // let mainHTML = $("body")?.html() ?? "";
-  let mainHTML = $("#main-content").html() ?? ""; // Use this line if you want to ignore the navbar and all
+  let mainHTML = $("body")?.html() ?? "";
+  // let mainHTML = $("#main-content").html() ?? ""; // Use this line if you want to ignore the navbar and all
 
   let mainHTMLAsText: string = convert(mainHTML, {
     formatters: {
