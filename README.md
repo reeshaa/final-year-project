@@ -47,4 +47,7 @@ based on the user’s prompt with much higher accuracy.
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `OPENAI_API_KEY`
 
+## Screenshots
 
+![Query Page Answered - Dark](https://github.com/reeshaa/final-year-project/assets/37346450/efce5ae5-0441-4085-b409-c8ba94d95628)
+![Embeddings Page - Dark](https://github.com/reeshaa/final-year-project/assets/37346450/1eb767a3-3a92-4a5a-9d22-20b3bd6e8e6d)
